@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+{#
+    <!--
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -48,4 +50,429 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 </body>
+</html>
+-->
+#}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if title %}
+    <title>Flaskblog — {{ title }}</title>
+    {% else %}
+    <title>Flaskblog</title>
+    {% endif %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('main.home') }}" style="text-decoration:none;">
+                <h1>Flask Blog</h1>
+            </a>
+        </div>
+
+        <!-- Desktop Nav -->
+        <div class="nav-items nav-desktop">
+            <a class="nav-item" href="{{ url_for('main.home') }}">Home</a>
+            <a class="nav-item" href="{{ url_for('main.about') }}">About</a>
+            {% if current_user.is_authenticated %}
+            <a class="nav-item" href="{{ url_for('posts.new_post') }}">✍️ Write</a>
+            <a class="nav-item nav-avatar-link" href="{{ url_for('users.account') }}">
+                <img class="rounded-circle nav-img"
+                    src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}"
+                    alt="{{ current_user.username }}">
+                <span class="nav-username">{{ current_user.username }}</span>
+            </a>
+            <a class="nav-item nav-logout" href="{{ url_for('users.logout') }}">Logout</a>
+            {% else %}
+            <a class="nav-item" href="{{ url_for('users.login') }}">Login</a>
+            <a class="nav-item nav-register-btn" href="{{ url_for('users.register') }}">Get Started</a>
+            {% endif %}
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Drawer -->
+    <div class="nav-mobile-drawer" id="navDrawer">
+        <a href="{{ url_for('main.home') }}" class="nav-mobile-item">🏠 Home</a>
+        <a href="{{ url_for('main.about') }}" class="nav-mobile-item">📖 About</a>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('posts.new_post') }}" class="nav-mobile-item">✍️ Write a Post</a>
+        <a href="{{ url_for('users.account') }}" class="nav-mobile-item">👤 My Account</a>
+        <a href="{{ url_for('users.logout') }}" class="nav-mobile-item nav-mobile-logout">Logout</a>
+        {% else %}
+        <a href="{{ url_for('users.login') }}" class="nav-mobile-item">Login</a>
+        <a href="{{ url_for('users.register') }}" class="nav-mobile-item nav-mobile-register">Get Started</a>
+        {% endif %}
+    </div>
+
+    <!-- ===== FLASH MESSAGES ===== -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+            {% if category == 'success' %}✅{% elif category == 'danger' %}❌{% else %}ℹ️{% endif %}
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>
+        {% block content %}{% endblock content %}
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="footer-logo">Flask Blog</span>
+                <p class="footer-tagline">A place for every voice, every story.</p>
+            </div>
+            <div class="footer-links">
+                <a href="{{ url_for('main.home') }}">Home</a>
+                <a href="{{ url_for('main.about') }}">About</a>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('posts.new_post') }}">Write</a>
+                <a href="{{ url_for('users.account') }}">Account</a>
+                {% else %}
+                <a href="{{ url_for('users.register') }}">Register</a>
+                <a href="{{ url_for('users.login') }}">Login</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © {{ 2026 }} Flask Blog · Built with Flask &amp; ❤️
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <!-- Mobile Nav Script -->
+    <script>
+        const hamburger = document.getElementById('navHamburger');
+        const drawer = document.getElementById('navDrawer');
+
+        hamburger.addEventListener('click', () => {
+            const isOpen = drawer.classList.toggle('nav-drawer-open');
+            hamburger.classList.toggle('nav-hamburger-open', isOpen);
+        });
+
+        // Close drawer when a link is clicked
+        drawer.querySelectorAll('.nav-mobile-item').forEach(link => {
+            link.addEventListener('click', () => {
+                drawer.classList.remove('nav-drawer-open');
+                hamburger.classList.remove('nav-hamburger-open');
+            });
+        });
+    </script>
+
+    <!-- Layout Styles -->
+    <style>
+        /* ===== NAVBAR DESKTOP ===== */
+        .nav-desktop {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-avatar-link {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 10px !important;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .nav-avatar-link:hover {
+            background: var(--primary-light);
+        }
+
+        .nav-username {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .nav-logout {
+            color: var(--text-muted) !important;
+            font-size: 0.85rem !important;
+        }
+
+        .nav-logout:hover {
+            color: var(--danger) !important;
+            background: var(--danger-light) !important;
+        }
+
+        .nav-register-btn {
+            background: var(--primary) !important;
+            color: #fff !important;
+            border-radius: var(--radius-sm);
+            padding: 7px 16px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.22);
+            transition: background 0.2s, transform 0.15s !important;
+        }
+
+        .nav-register-btn:hover {
+            background: var(--primary-hover) !important;
+            color: #fff !important;
+            transform: translateY(-1px);
+        }
+
+        /* ===== HAMBURGER ===== */
+        .nav-hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s;
+        }
+
+        .nav-hamburger:hover {
+            background: var(--primary-light);
+        }
+
+        .nav-hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .nav-hamburger-open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .nav-hamburger-open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-hamburger-open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* ===== MOBILE DRAWER ===== */
+        .nav-mobile-drawer {
+            display: none;
+            flex-direction: column;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            padding: 0.5rem 1rem 1rem;
+            position: sticky;
+            top: var(--nav-height);
+            z-index: 99;
+        }
+
+        .nav-mobile-drawer.nav-drawer-open {
+            display: flex;
+        }
+
+        .nav-mobile-item {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            padding: 11px 12px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-mobile-item:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .nav-mobile-logout {
+            color: var(--danger) !important;
+            margin-top: 4px;
+        }
+
+        .nav-mobile-logout:hover {
+            background: var(--danger-light) !important;
+        }
+
+        .nav-mobile-register {
+            background: var(--primary);
+            color: #fff !important;
+            text-align: center;
+            margin-top: 6px;
+            font-weight: 600 !important;
+        }
+
+        .nav-mobile-register:hover {
+            background: var(--primary-hover) !important;
+            color: #fff !important;
+        }
+
+        /* ===== FLASH CONTAINER ===== */
+        .flash-container {
+            max-width: 680px;
+            margin: 1.25rem auto 0;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .flash {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .flash-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border-color: var(--success-border);
+        }
+
+        .flash-danger {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border-color: var(--error-border);
+        }
+
+        .flash-info {
+            background: var(--info-bg);
+            color: var(--info-text);
+            border-color: var(--info-border);
+        }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+            padding: 2.5rem 8% 1.5rem;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            max-width: 900px;
+            margin: 0 auto 1.5rem;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        .footer-tagline {
+            font-size: 0.825rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .nav-desktop {
+                display: none;
+            }
+
+            .nav-hamburger {
+                display: flex;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                gap: 1.25rem;
+            }
+
+            .footer-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+
+</body>
+
 </html>

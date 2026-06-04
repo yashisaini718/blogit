@@ -31,11 +31,44 @@ def save_picture(form_picture):
 def send_reset_email(user):
     token=user.get_reset_token()
     msg=Message('Password Reset Request',
-                sender="noreply@demo.com",
                 recipients=[user.email])
-    msg.body=f'''To reset your password, visit the following link:
+    
+    msg.body = f"""
+To reset your password, visit the following link:
+
 {url_for('users.reset_token',token=token, _external=True)}
-     
-If you did not made this request, simply ignore this email.
+
+If you did not make this request, simply ignore this email.
+"""
+    msg.html=f'''
+<div style="max-width:600px;margin:auto;padding:30px;font-family:Arial,sans-serif;">
+    <h1>Flask Blog</h1>
+
+    <p>Hello,</p>
+
+    <p>We received a request to reset your password.</p>
+
+    <p style="text-align:center;margin:30px 0;">
+        <a href="{url_for('users.reset_token',token=token, _external=True)}"
+           style="background:#4f46e5;
+                  color:white;
+                  padding:14px 28px;
+                  border-radius:8px;
+                  text-decoration:none;
+                  font-weight:bold;">
+            Reset Password
+        </a>
+    </p>
+
+    <p>
+        This link will expire shortly for security reasons.
+    </p>
+
+    <hr>
+
+    <p style="color:#777;">
+        If you didn't request this password reset, you can safely ignore this email.
+    </p>
+</div>
 '''
     mail.send(msg)

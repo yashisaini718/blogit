@@ -1,4 +1,6 @@
-{% extends "layout.html" %}
+{#
+    <!--
+    {% extends "layout.html" %}
 {% block content %}
 <div class="Content">
     <h3 class="ms-5 mb-3"> Posts by {{user.username}} ({{ posts.total}})</h3>
@@ -20,7 +22,7 @@
             <p class="article-content">{{ post.content }}</p>
         </div>
     </article>
-    <!-- Modal -->
+
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -52,4 +54,136 @@
     {% endif %}
     {% endfor %}
 </div>
+{% endblock content %}
+-->
+#}
+
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="user-posts-wrapper">
+
+    <!-- Profile Header -->
+    <div class="user-posts-header">
+        <div class="user-posts-header-inner">
+            <img class="user-posts-avatar" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}"
+                alt="{{ user.username }}">
+            <div class="user-posts-header-info">
+                <h1 class="user-posts-name">{{ user.username }}</h1>
+                <p class="user-posts-count">
+                    {{ posts.total }} post{% if posts.total != 1 %}s{% endif %} published
+                </p>
+                {% if current_user == user %}
+                <a href="{{ url_for('users.account') }}" class="user-posts-edit-profile">
+                    Edit Profile
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts Feed -->
+    <div class="posts-feed">
+        {% for post in posts %}
+        <article class="post-card">
+
+            <!-- Author Row -->
+            <div class="post-author-row">
+                <div style="display:flex; align-items:center; gap:9px;">
+                    <img class="post-author-avatar"
+                        src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"
+                        alt="{{ post.author.username }}">
+                    <span class="post-author-name">{{ post.author.username }}</span>
+                </div>
+                <span class="post-date">{{ post.date_posted.strftime('%b %d, %Y') }}</span>
+            </div>
+
+            <!-- Post Body -->
+            <a href="{{ url_for('posts.post', post_id=post.id) }}" class="post-title-link">
+                <h2 class="post-title">{{ post.title }}</h2>
+            </a>
+            <p class="post-excerpt">
+                {{ post.content[:180] }}{% if post.content|length > 180 %}...{% endif %}
+            </p>
+
+            <!-- Card Footer -->
+            <div class="post-card-footer">
+                <a href="{{ url_for('posts.post', post_id=post.id) }}" class="post-read-more">
+                    Read more →
+                </a>
+                {% if post.author == current_user %}
+                <div class="post-owner-actions">
+                    <a href="{{ url_for('posts.update_post', post_id=post.id) }}"
+                        class="post-action-btn post-action-edit">
+                         Edit
+                    </a>
+                    <button type="button" class="post-action-btn post-action-delete" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal{{ post.id }}">
+                         Delete
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+
+        </article>
+
+        <!-- Bootstrap Delete Modal (unique per post) -->
+        {% if post.author == current_user %}
+        <div class="modal fade" id="deleteModal{{ post.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content delete-modal-content">
+                    <div class="delete-modal-header">
+                        <span class="delete-modal-icon">🗑️</span>
+                        <h5 class="delete-modal-title">Delete Post?</h5>
+                        <p class="delete-modal-sub">
+                            This will permanently delete "<strong>{{ post.title }}</strong>". This action cannot be
+                            undone.
+                        </p>
+                        <button type="button" class="delete-modal-close" data-bs-dismiss="modal">✕</button>
+                    </div>
+                    <div class="delete-modal-footer">
+                        <button type="button" class="delete-btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                        <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+                            <button type="submit" class="delete-btn-confirm">Yes, Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-state">
+            <span class="empty-state-icon">📭</span>
+            <h3 class="empty-state-title">No posts yet</h3>
+            <p class="empty-state-text">{{ user.username }} hasn't published anything yet.</p>
+            {% if current_user == user %}
+            <a href="{{ url_for('posts.new_post') }}" class="home-write-btn"
+                style="display:inline-block; margin-top:1rem;">
+                ✍️ Write your first post
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if posts.pages > 1 %}
+    <div class="pagination-row">
+        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+
+        <a href="{{ url_for('users.user_posts', username=user.username, page=page_num) }}" class="page-btn {% if posts.page == page_num %}page-btn-active{% endif %}"
+        > {{ page_num }}</a>
+        
+        {% else %}
+        <span class="page-ellipsis">…</span>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+</div>
+
 {% endblock content %}

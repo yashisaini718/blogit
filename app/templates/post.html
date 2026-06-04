@@ -1,4 +1,5 @@
-{% extends "layout.html" %}
+{#
+    <!--{% extends "layout.html" %}
 {% block content %}
 
 <article class="media content-section">
@@ -13,5 +14,375 @@
         <p class="article-content">{{ post.content }}</p>
     </div>
 </article>
+
+{% endblock content %}
+-->
+#}
+
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="post-page-wrapper">
+
+    <!-- Back Link -->
+    <a href="{{ url_for('main.home') }}" class="post-back-link">
+        ← Back to Feed
+    </a>
+
+    <!-- Post Article -->
+    <article class="post-page-card">
+
+        <!-- Post Header -->
+        <header class="post-page-header">
+            <h1 class="post-page-title">{{ post.title }}</h1>
+
+            <!-- Author Meta -->
+            <div class="post-page-meta">
+                <a href="{{ url_for('users.user_posts', username=post.author.username) }}"
+                    class="post-page-author-link">
+                    <img class="post-page-avatar"
+                        src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"
+                        alt="{{ post.author.username }}">
+                    <span class="post-page-author-name">{{ post.author.username }}</span>
+                </a>
+                <span class="post-page-meta-dot">·</span>
+                <span class="post-page-date">{{ post.date_posted.strftime('%B %d, %Y') }}</span>
+            </div>
+        </header>
+
+        <!-- Divider -->
+        <div class="post-page-divider"></div>
+
+        <!-- Post Body -->
+        <div class="post-page-body">
+            {{ post.content }}
+        </div>
+
+        <!-- Divider -->
+        <div class="post-page-divider"></div>
+
+        <!-- Post Footer -->
+        <footer class="post-page-footer">
+            <a href="{{ url_for('users.user_posts', username=post.author.username) }}" class="post-page-more-link">
+                More posts by {{ post.author.username }} →
+            </a>
+
+            {% if post.author == current_user %}
+            <div class="post-page-owner-actions">
+                <a href="{{ url_for('posts.update_post', post_id=post.id) }}" class="post-page-edit-btn">
+                    Edit Post
+                </a>
+                <button type="button" class="post-page-delete-btn" data-bs-toggle="modal"
+                    data-bs-target="#deletePostModal">
+                    Delete
+                </button>
+            </div>
+            {% endif %}
+        </footer>
+
+    </article>
+
+    <!-- Author Card 
+    <div class="post-author-card">
+        <img class="post-author-card-avatar"
+            src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"
+            alt="{{ post.author.username }}">
+        <div class="post-author-card-info">
+            <span class="post-author-card-label">Written by</span>
+            <a href="{{ url_for('users.user_posts', username=post.author.username) }}" class="post-author-card-name">
+                {{ post.author.username }}
+            </a>
+            <a href="{{ url_for('users.user_posts', username=post.author.username) }}" class="post-author-card-posts">
+                View all posts →
+            </a>
+        </div>
+    </div> -->
+
+</div>
+
+<!-- Delete Modal -->
+{% if post.author == current_user %}
+<div class="modal fade" id="deletePostModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content delete-modal-content">
+            <div class="delete-modal-header">
+                <h5 class="delete-modal-title">Delete Post?</h5>
+                <p class="delete-modal-sub">
+                    This will permanently delete "<strong>{{ post.title }}</strong>". This action cannot be undone.
+                </p>
+                <button type="button" class="delete-modal-close" data-bs-dismiss="modal">✕</button>
+            </div>
+            <div class="delete-modal-footer">
+                <button type="button" class="delete-btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+                    <button type="submit" class="delete-btn-confirm">Yes, Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<style>
+    .post-page-wrapper {
+        max-width: 680px;
+        margin: 2rem auto;
+        padding: 0 1.25rem 3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    /* ===== BACK LINK ===== */
+    .post-back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s;
+        width: fit-content;
+    }
+
+    .post-back-link:hover {
+        color: var(--primary);
+    }
+
+    /* ===== POST CARD ===== */
+    .post-page-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 2.5rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* ===== POST HEADER ===== */
+    .post-page-title {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.3;
+        margin-bottom: 1.1rem;
+        letter-spacing: -0.4px;
+    }
+
+    .post-page-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .post-page-author-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .post-page-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--border);
+        transition: border-color 0.2s;
+    }
+
+    .post-page-author-link:hover .post-page-avatar {
+        border-color: var(--primary);
+    }
+
+    .post-page-author-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--primary);
+        transition: color 0.2s;
+    }
+
+    .post-page-author-link:hover .post-page-author-name {
+        color: var(--primary-hover);
+    }
+
+    .post-page-meta-dot {
+        color: var(--text-muted);
+        font-size: 1rem;
+    }
+
+    .post-page-date {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    /* ===== DIVIDER ===== */
+    .post-page-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 1.75rem 0;
+    }
+
+    .post-page-body {
+        font-size: 1.05rem;
+        color: var(--text-primary);
+        line-height: 1.85;
+        white-space: pre-wrap;
+        word-break: break-word;
+        margin: 0;        
+        padding: 0;      
+        text-indent: 0;   
+    }
+
+    /* ===== POST FOOTER ===== */
+    .post-page-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .post-page-more-link {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .post-page-more-link:hover {
+        color: var(--primary-hover);
+    }
+
+    .post-page-owner-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .post-page-edit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 16px;
+        background: var(--primary-light);
+        color: var(--primary);
+        border-radius: var(--radius-sm);
+        font-size: 0.825rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .post-page-edit-btn:hover {
+        background: #ddd6fe;
+        transform: translateY(-1px);
+        color: var(--primary);
+    }
+
+    .post-page-delete-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 16px;
+        background: var(--danger-light);
+        color: var(--danger);
+        border: none;
+        border-radius: var(--radius-sm);
+        font-size: 0.825rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: var(--font-body);
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .post-page-delete-btn:hover {
+        background: #fca5a5;
+        transform: translateY(-1px);
+    }
+
+    /* ===== AUTHOR CARD ===== */
+    .post-author-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .post-author-card-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--border);
+        flex-shrink: 0;
+    }
+
+    .post-author-card-info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .post-author-card-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .post-author-card-name {
+        font-family: var(--font-display);
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .post-author-card-name:hover {
+        color: var(--primary);
+    }
+
+    .post-author-card-posts {
+        font-size: 0.825rem;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .post-author-card-posts:hover {
+        color: var(--primary-hover);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+        .post-page-card {
+            padding: 1.5rem;
+        }
+
+        .post-page-title {
+            font-size: 1.6rem;
+        }
+
+        .post-author-card {
+            padding: 1.25rem;
+        }
+
+        .post-page-footer {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    
+</style>
 
 {% endblock content %}

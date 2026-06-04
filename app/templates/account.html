@@ -1,4 +1,6 @@
-{% extends "layout.html" %}
+{#
+    <!--
+    {% extends "layout.html" %}
 {% block content %}
 <div class="content-section">
     <div class="media">
@@ -49,4 +51,289 @@
             </fieldset>
         </form>
 </div>
+{% endblock content %}
+--> 
+#}
+
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="account-wrapper">
+
+    <!-- Profile Header Card -->
+    <div class="account-profile-card">
+        <div class="account-avatar-wrap">
+            <img class="account-avatar" src="{{ image_file }}" alt="{{ current_user.username }}">
+            <span class="account-avatar-badge">✏️</span>
+        </div>
+        <div class="account-profile-info">
+            <h1 class="account-display-name">{{ current_user.username }}</h1>
+            <p class="account-email">{{ current_user.email }}</p>
+            <a href="{{ url_for('users.user_posts', username=current_user.username) }}" class="account-posts-link">
+                View my posts →
+            </a>
+        </div>
+    </div>
+
+    <!-- Update Form Card -->
+    <div class="account-form-card">
+        <div class="account-form-header">
+            <h2 class="account-form-title">Account Settings</h2>
+            <p class="account-form-subtitle">Update your profile information below.</p>
+        </div>
+
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <!-- Username -->
+            <div class="form-group">
+                {{ form.username.label(class='form-control-label') }}
+                {{ form.username(class='form-control', placeholder='Your username') }}
+                {% if form.username.errors %}
+                <div class="error-messages">
+                    {% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                {{ form.email.label(class='form-control-label') }}
+                {{ form.email(class='form-control', placeholder='Your email address') }}
+                {% if form.email.errors %}
+                <div class="error-messages">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Profile Picture -->
+            <div class="form-group">
+                <label class="form-control-label">Profile Picture</label>
+                <div class="file-upload-wrapper">
+                    <label class="file-upload-label" for="{{ form.picture.id }}">
+                        
+                        <span class="file-upload-text">Choose a new photo</span>
+                        <span class="file-upload-hint">JPG, PNG up to 5MB</span>
+                    </label>
+                    {{ form.picture(class='form-control-file visually-hidden', id=form.picture.id) }}
+                </div>
+                <p class="file-name-preview" id="fileNamePreview">No file chosen</p>
+                {% for error in form.picture.errors %}
+                <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <!-- Submit -->
+            <div class="form-group" style="margin-top: 1.5rem;">
+                {{ form.submit(class='post-btn', value='Save Changes') }}
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+<script>
+    // Show selected filename
+    const fileInput = document.getElementById('{{ form.picture.id }}');
+    const preview = document.getElementById('fileNamePreview');
+    if (fileInput) {
+        fileInput.addEventListener('change', () => {
+            preview.textContent = fileInput.files.length
+                ? fileInput.files[0].name
+                : 'No file chosen';
+        });
+    }
+</script>
+
+<style>
+    .account-wrapper {
+        max-width: 580px;
+        margin: 2.5rem auto;
+        padding: 0 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    /* ===== PROFILE HEADER CARD ===== */
+    .account-profile-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .account-avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .account-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--border);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .account-avatar-badge {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 24px;
+        height: 24px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        border: 2px solid var(--surface);
+    }
+
+    .account-profile-info {
+        flex: 1;
+    }
+
+    .account-display-name {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.2rem;
+    }
+
+    .account-email {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        margin-bottom: 0.6rem;
+    }
+
+    .account-posts-link {
+        font-size: 0.825rem;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .account-posts-link:hover {
+        color: var(--primary-hover);
+    }
+
+    /* ===== FORM CARD ===== */
+    .account-form-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 2rem 2.25rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .account-form-header {
+        margin-bottom: 1.6rem;
+        padding-bottom: 1.1rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .account-form-title {
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .account-form-subtitle {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    /* ===== FILE UPLOAD ===== */
+    .file-upload-wrapper {
+        margin-top: 6px;
+    }
+
+    .file-upload-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        background: var(--bg);
+        border: 1.5px dashed var(--border);
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s;
+    }
+
+    .file-upload-label:hover {
+        border-color: var(--primary);
+        background: var(--primary-light);
+    }
+
+    .file-upload-icon {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+
+    .file-upload-text {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: block;
+    }
+
+    .file-upload-hint {
+        font-size: 0.775rem;
+        color: var(--text-muted);
+        display: block;
+    }
+
+    .file-name-preview {
+        margin-top: 7px;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+        .account-profile-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .account-profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .account-form-card {
+            padding: 1.5rem 1.25rem;
+        }
+    }
+</style>
+
 {% endblock content %}

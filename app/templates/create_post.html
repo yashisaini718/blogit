@@ -1,4 +1,6 @@
-{% extends "layout.html" %}
+{#
+    <!--
+    {% extends "layout.html" %}
 {% block content %}
 <div class="content-section">
 <form method="POST" action="" enctype="multipart/form-data">
@@ -34,4 +36,206 @@
     </fieldset>
 </form>
 </div>
+{% endblock content %}
+-->
+#}
+
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="create-post-wrapper">
+
+    <!-- Page Header -->
+    <div class="create-post-header">
+        <a href="{{ url_for('main.home') }}" class="create-post-back">← Back to Feed</a>
+        <h1 class="create-post-title">{{ legend }}</h1>
+        <p class="create-post-subtitle">
+            {% if legend == 'New Post' %}
+            Share your thoughts with the community.
+            {% else %}
+            Make changes to your post below.
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="create-post-card">
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <!-- Title -->
+            <div class="form-group">
+                {{ form.title.label(class='form-control-label') }}
+                {{ form.title(class='form-control', placeholder='Give your post a great title...') }}
+                {% if form.title.errors %}
+                <div class="error-messages">
+                    {% for error in form.title.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Content -->
+            <div class="form-group">
+                {{ form.content.label(class='form-control-label') }}
+                {{ form.content(class='form-control create-post-textarea', placeholder='Write your post content
+                here...', rows=10) }}
+                {% if form.content.errors %}
+                <div class="error-messages">
+                    {% for error in form.content.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="create-post-actions">
+                <a href="{{ url_for('main.home') }}" class="create-post-cancel">Cancel</a>
+                {{ form.submit(class='post-btn') }}
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Writing Tip -->
+    <p class="create-post-tip">
+        💡 <strong>Tip:</strong> A good post has a clear title, a strong opening line, and gets to the point quickly.
+    </p>
+
+</div>
+
+<style>
+    .create-post-wrapper {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 0 1.25rem 3rem;
+    }
+
+    /* ===== HEADER ===== */
+    .create-post-header {
+        padding: 2.25rem 0 1.5rem;
+    }
+
+    .create-post-back {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-decoration: none;
+        margin-bottom: 1rem;
+        transition: color 0.2s;
+    }
+
+    .create-post-back:hover {
+        color: var(--primary);
+    }
+
+    .create-post-title {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0 0 0.4rem;
+        letter-spacing: -0.4px;
+    }
+
+    .create-post-subtitle {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    /* ===== FORM CARD ===== */
+    .create-post-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 2rem 2.25rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* ===== TEXTAREA ===== */
+    .create-post-textarea {
+        resize: vertical;
+        min-height: 280px;
+        font-size: 1rem !important;
+        line-height: 1.75 !important;
+        font-family: var(--font-body) !important;
+        color: var(--text-primary) !important;
+    }
+
+    .create-post-textarea:focus {
+        outline: none;
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
+    }
+
+    /* ===== FORM ACTIONS ===== */
+    .create-post-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .create-post-cancel {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: var(--radius-sm);
+        border: 1.5px solid var(--border);
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .create-post-cancel:hover {
+        background: var(--bg);
+        color: var(--text-primary);
+    }
+
+    /* ===== TIP ===== */
+    .create-post-tip {
+        margin-top: 1.25rem;
+        font-size: 0.825rem;
+        color: var(--text-muted);
+        text-align: center;
+        line-height: 1.6;
+    }
+
+    .create-post-tip strong {
+        color: var(--text-secondary);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+        .create-post-card {
+            padding: 1.5rem 1.25rem;
+        }
+
+        .create-post-title {
+            font-size: 1.6rem;
+        }
+
+        .create-post-actions {
+            flex-direction: column-reverse;
+            align-items: stretch;
+        }
+
+        .create-post-cancel {
+            text-align: center;
+        }
+
+        .post-btn {
+            width: 100%;
+        }
+    }
+</style>
+
 {% endblock content %}

@@ -1,4 +1,454 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1> this is the about page</h1>
+
+<div class="about-hero">
+    <div class="about-hero-badge">✍️ About Flask Blog</div>
+    <h1 class="about-hero-title">A Platform for Every Voice,<br>Every Story</h1>
+    <p class="about-hero-subtitle">
+        Flask Blog is an open platform where anyone can sign up, share their thoughts,
+        and connect through the power of writing. From personal diaries to deep dives —
+        every story has a home here.
+    </p>
+    {% if not current_user.is_authenticated %}
+    <div class="about-hero-actions">
+        <a href="{{ url_for('users.register') }}" class="about-btn-primary">Start Writing Free</a>
+        <a href="{{ url_for('users.login') }}" class="about-btn-secondary">Sign In</a>
+    </div>
+    {% else %}
+    <div class="about-hero-actions">
+        <a href="{{ url_for('posts.new_post') }}" class="about-btn-primary">Write a Post</a>
+        <a href="{{ url_for('main.home') }}" class="about-btn-secondary">Browse Posts</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- What is Flask Blog -->
+<div class="about-section">
+    <div class="about-section-icon">🌐</div>
+    <div class="about-section-body">
+        <h2 class="about-section-title">What is Flask Blog?</h2>
+        <p class="about-section-text">
+            Flask Blog is a community-driven blogging platform where writers of all kinds
+            come to publish and share. Whether you're journaling your daily life, sharing
+            expertise, telling stories, or exploring ideas — this is your space to do it.
+            No algorithms, no noise. Just writing.
+        </p>
+    </div>
+</div>
+
+<div class="about-divider"></div>
+
+<!-- How it works -->
+<div class="about-section">
+    <div class="about-section-icon">🚀</div>
+    <div class="about-section-body">
+        <h2 class="about-section-title">How It Works</h2>
+        <div class="about-steps">
+            <div class="about-step">
+                <span class="about-step-number">1</span>
+                <div>
+                    <strong>Create an account</strong>
+                    <p>Sign up in seconds with just a username, email and password.</p>
+                </div>
+            </div>
+            <div class="about-step">
+                <span class="about-step-number">2</span>
+                <div>
+                    <strong>Set up your profile</strong>
+                    <p>Add a profile picture and make your page your own.</p>
+                </div>
+            </div>
+            <div class="about-step">
+                <span class="about-step-number">3</span>
+                <div>
+                    <strong>Start writing</strong>
+                    <p>Publish posts instantly — no approvals, no waiting.</p>
+                </div>
+            </div>
+            <div class="about-step">
+                <span class="about-step-number">4</span>
+                <div>
+                    <strong>Get discovered</strong>
+                    <p>Your posts appear on the home feed for all readers to find.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="about-divider"></div>
+
+<!-- Who is it for -->
+<div class="about-section">
+    <div class="about-section-icon">👥</div>
+    <div class="about-section-body">
+        <h2 class="about-section-title">Who Is It For?</h2>
+        <p class="about-section-text">Flask Blog is for anyone with something to say.</p>
+        <div class="about-tags" style="margin-top: 1rem;">
+            <span class="about-tag">🧑‍💻 Developers</span>
+            <span class="about-tag">📓 Journalers</span>
+            <span class="about-tag">🎨 Creatives</span>
+            <span class="about-tag">📸 Storytellers</span>
+            <span class="about-tag">🧠 Thinkers</span>
+            <span class="about-tag">🌱 Beginners</span>
+            <span class="about-tag">📢 Advocates</span>
+            <span class="about-tag">🔬 Researchers</span>
+        </div>
+    </div>
+</div>
+
+<div class="about-divider"></div>
+
+<!-- Platform values -->
+<div class="about-values">
+    <h2 class="about-values-title">What We Stand For</h2>
+    <div class="about-values-grid">
+        <div class="about-value-card">
+            <span class="about-value-icon">🔓</span>
+            <h3>Open to All</h3>
+            <p>Anyone can join and start publishing. No gatekeeping, no barriers.</p>
+        </div>
+        <div class="about-value-card">
+            <span class="about-value-icon">✏️</span>
+            <h3>Writer First</h3>
+            <p>Clean, distraction-free writing experience so you can focus on what matters.</p>
+        </div>
+        <div class="about-value-card">
+            <span class="about-value-icon">🤝</span>
+            <h3>Community Driven</h3>
+            <p>Real people, real stories. A feed built on authentic human writing.</p>
+        </div>
+        <div class="about-value-card">
+            <span class="about-value-icon">🛡️</span>
+            <h3>Your Content, Your Control</h3>
+            <p>Edit, update, or delete your posts anytime. Full ownership, always.</p>
+        </div>
+    </div>
+</div>
+
+<div class="about-divider"></div>
+
+<!-- Final CTA -->
+{% if not current_user.is_authenticated %}
+<div class="about-cta">
+    <h2 class="about-cta-title">Ready to Share Your Story?</h2>
+    <p class="about-cta-sub">Join the community and publish your first post today. It's completely free.</p>
+    <div class="about-cta-buttons">
+        <a href="{{ url_for('users.register') }}" class="about-btn-primary">Create Your Account</a>
+        <a href="{{ url_for('main.home') }}" class="about-btn-secondary">Read Posts First</a>
+    </div>
+</div>
+{% else %}
+<div class="about-cta">
+    <h2 class="about-cta-title">You're Already Part of It!</h2>
+    <p class="about-cta-sub">Keep writing, keep sharing. The community is reading.</p>
+    <div class="about-cta-buttons">
+        <a href="{{ url_for('posts.new_post') }}" class="about-btn-primary">Write a New Post</a>
+        <a href="{{ url_for('main.home') }}" class="about-btn-secondary">Browse the Feed</a>
+    </div>
+</div>
+{% endif %}
+
+<style>
+    .about-hero {
+        text-align: center;
+        padding: 3.5rem 1.5rem 2.5rem;
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .about-hero-badge {
+        display: inline-block;
+        background: var(--primary-light);
+        color: var(--primary);
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 5px 14px;
+        border-radius: 99px;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .about-hero-title {
+        font-family: var(--font-display);
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.25;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+    }
+
+    .about-hero-subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        line-height: 1.8;
+        max-width: 520px;
+        margin: 0 auto 1.75rem;
+    }
+
+    .about-hero-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Sections */
+    .about-section {
+        display: flex;
+        gap: 1.25rem;
+        align-items: flex-start;
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .about-section-icon {
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        background: var(--primary-light);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .about-section-title {
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.6rem;
+    }
+
+    .about-section-text {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        line-height: 1.8;
+    }
+
+    /* Steps */
+    .about-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .about-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .about-step-number {
+        width: 30px;
+        height: 30px;
+        background: var(--primary);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .about-step strong {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+    }
+
+    .about-step p {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    /* Tags */
+    .about-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .about-tag {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+        font-weight: 500;
+        padding: 5px 13px;
+        border-radius: 99px;
+        transition: background 0.2s, color 0.2s, border-color 0.2s;
+        cursor: default;
+    }
+
+    .about-tag:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    /* Divider */
+    .about-divider {
+        max-width: 680px;
+        margin: 2.25rem auto;
+        height: 1px;
+        background: var(--border);
+    }
+
+    /* Values */
+    .about-values {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .about-values-title {
+        font-family: var(--font-display);
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.25rem;
+    }
+
+    .about-values-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .about-value-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .about-value-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+
+    .about-value-icon {
+        font-size: 1.4rem;
+        display: block;
+        margin-bottom: 0.6rem;
+    }
+
+    .about-value-card h3 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.35rem;
+    }
+
+    .about-value-card p {
+        font-size: 0.825rem;
+        color: var(--text-secondary);
+        line-height: 1.65;
+        margin: 0;
+    }
+
+    /* CTA */
+    .about-cta {
+        text-align: center;
+        max-width: 520px;
+        margin: 0 auto 2.5rem;
+        padding: 2.5rem 2rem;
+        background: var(--primary-light);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(79, 70, 229, 0.15);
+    }
+
+    .about-cta-title {
+        font-family: var(--font-display);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .about-cta-sub {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.4rem;
+        line-height: 1.7;
+    }
+
+    .about-cta-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .about-btn-primary {
+        background: var(--primary);
+        color: #fff;
+        padding: 10px 22px;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.15s;
+        box-shadow: 0 2px 8px rgba(79, 70, 229, 0.28);
+    }
+
+    .about-btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+        color: #fff;
+    }
+
+    .about-btn-secondary {
+        background: var(--surface);
+        color: var(--primary);
+        padding: 10px 22px;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1.5px solid var(--primary);
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .about-btn-secondary:hover {
+        background: var(--primary-light);
+        transform: translateY(-1px);
+        color: var(--primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+        .about-hero-title {
+            font-size: 1.85rem;
+        }
+
+        .about-values-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .about-section {
+            padding: 0;
+        }
+
+        .about-values {
+            padding: 0;
+        }
+    }
+</style>
+
 {% endblock content %}

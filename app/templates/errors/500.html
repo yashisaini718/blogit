@@ -1,11 +1,26 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="content-section">
-    <h1>
-        Something went wrong...(500)
-    </h1>
-    <p>
-        We'er experiencing some trouble on our end. Please try again in near future.
-    </p>
+
+<div class="error-wrapper">
+    <div class="error-card">
+        <div class="error-icon">⚙️</div>
+        <div class="error-code">500</div>
+        <h1 class="error-title">Server Error</h1>
+        <p class="error-message">
+            Something went wrong on our end. It's not you, it's us.
+            Please try again in a moment.
+        </p>
+        <div class="error-actions">
+            <a href="{{ url_for('main.home') }}" class="error-btn-primary">Go to Home</a>
+            <a href="javascript:history.back()" class="error-btn-secondary">Go Back</a>
+        </div>
+    </div>
+
+    <div class="error-illustration">
+        <div class="error-illustration-circle error-circle-1"></div>
+        <div class="error-illustration-circle error-circle-2"></div>
+        <div class="error-illustration-circle error-circle-3"></div>
+    </div>
 </div>
+
 {% endblock content %}

@@ -1,4 +1,6 @@
-{% extends "layout.html" %}
+{#
+    <!--
+    {% extends "layout.html" %}
 {% block content %}
 <div class="content-area">
 
@@ -69,4 +71,274 @@
         </small>
     </div>
 </div>
+{% endblock content %}
+-->
+#}
+
+
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="auth-wrapper">
+
+    <!-- Card -->
+    <div class="auth-card">
+
+        <!-- Header -->
+        <div class="auth-card-header">
+            <div class="auth-logo">✍️</div>
+            <h1 class="auth-title">Join Flask Blog</h1>
+            <p class="auth-subtitle">Create your account and start sharing your story.</p>
+        </div>
+
+        <!-- Form -->
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+
+            <!-- Username -->
+            <div class="form-group">
+                {{ form.username.label(class='form-control-label') }}
+                {{ form.username(class='form-control', placeholder='Choose a username') }}
+                {% if form.username.errors %}
+                <div class="error-messages">
+                    {% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                {{ form.email.label(class='form-control-label') }}
+                {{ form.email(class='form-control', placeholder='Your email address') }}
+                {% if form.email.errors %}
+                <div class="error-messages">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                {{ form.password.label(class='form-control-label') }}
+                <div class="password-input-wrap">
+                    {{ form.password(class='form-control', placeholder='Create a password', id='password') }}
+                    <button type="button" class="password-toggle"
+                        onclick="togglePassword('password', this)">👁️</button>
+                </div>
+                {% if form.password.errors %}
+                <div class="error-messages">
+                    {% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+                {{ form.confirm_password.label(class='form-control-label') }}
+                <div class="password-input-wrap">
+                    {{ form.confirm_password(class='form-control', placeholder='Repeat your password',
+                    id='confirm_password') }}
+                    <button type="button" class="password-toggle"
+                        onclick="togglePassword('confirm_password', this)">👁️</button>
+                </div>
+                {% if form.confirm_password.errors %}
+                <div class="error-messages">
+                    {% for error in form.confirm_password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Submit -->
+            <div class="form-group" style="margin-top: 1.5rem;">
+                {{ form.submit(class='post-btn auth-submit-btn', value='Create Account') }}
+            </div>
+
+        </form>
+
+        <!-- Divider -->
+        <div class="auth-divider">
+            <span>Already have an account?</span>
+        </div>
+
+        <!-- Sign In Link -->
+        <a href="{{ url_for('users.login') }}" class="auth-alt-btn">
+            Sign In Instead
+        </a>
+
+    </div>
+
+    <!-- Footer note -->
+    <p class="auth-footer-note">
+        By signing up you agree to write respectfully and keep the community positive. 🌱
+    </p>
+
+</div>
+
+<script>
+    function togglePassword(fieldId, btn) {
+        const input = document.getElementById(fieldId);
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    }
+</script>
+
+<style>
+    .auth-wrapper {
+        min-height: calc(100vh - var(--nav-height) - 120px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1.25rem;
+    }
+
+    /* ===== AUTH CARD ===== */
+    .auth-card {
+        width: 100%;
+        max-width: 440px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 2.25rem 2.5rem;
+        box-shadow: var(--shadow-md);
+    }
+
+    /* ===== CARD HEADER ===== */
+    .auth-card-header {
+        text-align: center;
+        margin-bottom: 1.75rem;
+    }
+
+    .auth-logo {
+        font-size: 2.2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .auth-title {
+        font-family: var(--font-display);
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0 0 0.4rem;
+        letter-spacing: -0.3px;
+    }
+
+    .auth-subtitle {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    /* ===== PASSWORD TOGGLE ===== */
+    .password-input-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .password-input-wrap .form-control {
+        width: 100%;
+        padding-right: 44px;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 4px;
+        line-height: 1;
+        color: var(--text-muted);
+        transition: color 0.2s;
+    }
+
+    .password-toggle:hover {
+        color: var(--text-primary);
+    }
+
+    /* ===== SUBMIT BUTTON ===== */
+    .auth-submit-btn {
+        width: 100%;
+        justify-content: center;
+        font-size: 0.95rem !important;
+        padding: 12px !important;
+    }
+
+    /* ===== DIVIDER ===== */
+    .auth-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 1.5rem 0 1rem;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    /* ===== ALT BUTTON ===== */
+    .auth-alt-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        border-radius: var(--radius-sm);
+        border: 1.5px solid var(--border);
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .auth-alt-btn:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    /* ===== FOOTER NOTE ===== */
+    .auth-footer-note {
+        margin-top: 1.25rem;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        text-align: center;
+        max-width: 360px;
+        line-height: 1.6;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+        .auth-card {
+            padding: 1.75rem 1.25rem;
+        }
+
+        .auth-title {
+            font-size: 1.35rem;
+        }
+    }
+</style>
+
 {% endblock content %}
