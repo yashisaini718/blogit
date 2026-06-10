@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from flask import current_app
+from flask import current_app, url_for
 from itsdangerous import URLSafeTimedSerializer,BadSignature,SignatureExpired
 from app import db, login_manager
 from flask_login import UserMixin
@@ -28,6 +28,13 @@ class User(db.Model, UserMixin):
         except (BadSignature,SignatureExpired):
             return None
         return db.session.get(User,user_id)
+    
+    @property
+    def profile_image(self):
+        if self.image_file.startswith("http"):
+            return self.image_file
+        return url_for("static",filename=f"profile_pics/{self.image_file}")
+    
 
     def __repr__(self):
         return f"User('{self.username}','{self.email}','{self.image_file})"

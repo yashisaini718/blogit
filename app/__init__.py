@@ -5,6 +5,8 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from app.config import Config
 from flask_migrate import Migrate
+import cloudinary
+
 db=SQLAlchemy()
 bcrypt=Bcrypt()
 mail=Mail()
@@ -13,10 +15,18 @@ login_manager.login_view='users.login'
 login_manager.login_message_category='info'
 migrate=Migrate()
 
+
+
 def create_app(config_class=Config):
     app = Flask(__name__)  #flask application object
     app.config.from_object(Config) 
-
+    cloudinary.config(
+        cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
+        api_key=app.config["CLOUDINARY_API_KEY"],
+        api_secret=app.config["CLOUDINARY_API_SECRET"],
+        secure=True
+    )
+    
     db.init_app(app)
     bcrypt.init_app(app)
     mail.init_app(app)

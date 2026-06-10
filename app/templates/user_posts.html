@@ -66,7 +66,7 @@
     <!-- Profile Header -->
     <div class="user-posts-header">
         <div class="user-posts-header-inner">
-            <img class="user-posts-avatar" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}"
+            <img class="user-posts-avatar" src="{{user.profile_image }}"
                 alt="{{ user.username }}">
             <div class="user-posts-header-info">
                 <h1 class="user-posts-name">{{ user.username }}</h1>
@@ -91,7 +91,7 @@
             <div class="post-author-row">
                 <div style="display:flex; align-items:center; gap:9px;">
                     <img class="post-author-avatar"
-                        src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"
+                        src="{{ post.author.profile_image }}"
                         alt="{{ post.author.username }}">
                     <span class="post-author-name">{{ post.author.username }}</span>
                 </div>

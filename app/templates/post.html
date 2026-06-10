@@ -41,7 +41,7 @@
                 <a href="{{ url_for('users.user_posts', username=post.author.username) }}"
                     class="post-page-author-link">
                     <img class="post-page-avatar"
-                        src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"
+                        src="{{post.author.profile_image}}"
                         alt="{{ post.author.username }}">
                     <span class="post-page-author-name">{{ post.author.username }}</span>
                 </a>

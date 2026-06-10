@@ -92,7 +92,7 @@
             <a class="nav-item" href="{{ url_for('posts.new_post') }}">✍️ Write</a>
             <a class="nav-item nav-avatar-link" href="{{ url_for('users.account') }}">
                 <img class="rounded-circle nav-img"
-                    src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}"
+                    src="{{ current_user.profile_image}}"
                     alt="{{ current_user.username }}">
                 <span class="nav-username">{{ current_user.username }}</span>
             </a>
@@ -113,7 +113,7 @@
 
     <!-- Mobile Drawer -->
     <div class="nav-mobile-drawer" id="navDrawer">
-        <a href="{{ url_for('main.home') }}" class="nav-mobile-item">🏠 Home</a>
+        <a href="{{ url_for('main.home') }}" class="nav-mobile-item"> Home</a>
         <a href="{{ url_for('main.about') }}" class="nav-mobile-item">📖 About</a>
         {% if current_user.is_authenticated %}
         <a href="{{ url_for('posts.new_post') }}" class="nav-mobile-item">✍️ Write a Post</a>

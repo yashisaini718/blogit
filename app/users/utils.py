@@ -1,18 +1,23 @@
 import os
 import secrets
 from PIL import Image
+import cloudinary.uploader
 from flask_mail import Message
-from flask import url_for, current_app
+from flask import url_for
+from flask_login import current_user
 from app import mail
+import cloudinary
+from io import BytesIO
 
 def save_picture(form_picture):
-    random_hex=secrets.token_hex(8)
+    #random_hex=secrets.token_hex(8)
     # important to use splitext else split will split the path and filename and not the extension and filename 
-    _, file_ext=os.path.splitext(form_picture.filename) 
-    picture_fn=random_hex + file_ext
-    picture_path=os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
+    #_, file_ext=os.path.splitext(form_picture.filename) 
+    #picture_fn=random_hex + file_ext
+    #picture_path=os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
     
     i=Image.open(form_picture)
+
     # Crop to square (center)
     width, height = i.size
     min_side = min(width, height)
@@ -21,12 +26,25 @@ def save_picture(form_picture):
     right = (width + min_side) / 2
     bottom = (height + min_side) / 2
     i = i.crop((left, top, right, bottom))
+
     # changing the size
     output_size=(250,250)
     i.thumbnail(output_size)
-    i.save(picture_path)
 
-    return picture_fn
+    # save processed image in memory
+    image_stream=BytesIO()
+    i.save(image_stream,format=i.format or "JPEG")
+    image_stream.seek(0)
+
+    # upload to cloudinary
+    result=cloudinary.uploader.upload(
+        image_stream,
+        public_id=f"profile_{current_user.id}",
+        overwrite=True,
+        folder="blog/profile_pics"
+    )
+    
+    return result["secure_url"]
 
 def send_reset_email(user):
     token=user.get_reset_token()
