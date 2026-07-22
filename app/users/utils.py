@@ -89,9 +89,5 @@ If you did not make this request, simply ignore this email.
     </p>
 </div>
 '''
-    try:
-        print(f"Sending email to: {user.email}")
-        mail.send(msg)
-        print("EMAIL SENT SUCCESSFULLY")
-    except Exception as e:
-        print("EMAIL ERROR:", repr(e))
+    mail.send(msg)
+    

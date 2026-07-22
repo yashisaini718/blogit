@@ -1,38 +1,3 @@
-{#
-  <!--
-      {% extends "layout.html" %}
-{% block content %}
-<div class="content-area">
-
-    <form method="POST" action="">
-        {{form.hidden_tag()}}
-
-        <fieldset class=" login_gfvpage field ">
-            <legend class="Legend">{{legend}}</legend>
-            <div class="form-group">
-                {{form.email.label(class='form-control-label')}}
-                {{form.email(class='form-control')}}
-                {% if form.email.errors %}
-                <div class="error-messages">
-                    {% for error in form.email.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="form-group">
-                {{form.submit(class="post-btn")}}
-            </div>
-
-        </fieldset>
-
-    </form>
-</div>
-{% endblock content %}
--->
-#}
-
 {% extends "layout.html" %}
 {% block content %}
 

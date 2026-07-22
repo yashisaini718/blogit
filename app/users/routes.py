@@ -40,7 +40,7 @@ def login():
 @users.route("/logout")
 def logout():
     logout_user()
-    return redirect('home')
+    return redirect(url_for('home'))
 
 @users.route("/account", methods=['POST','GET'])
 @login_required
@@ -66,19 +66,25 @@ def account():
 def user_posts(username):
     page=request.args.get('page',1,type=int) 
     user=User.query.filter_by(username=username).first_or_404()
-    posts=Post.query.filter_by(author=user).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
+    posts=Post.query.filter_by(user_id=user.id).order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('user_posts.html', posts=posts, user=user)
 
 @users.route("/reset_password",methods=['GET','POST'])
 def reset_request():
-    form=RequestResetForm()
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
+    form=RequestResetForm()
     if form.validate_on_submit():
         user=User.query.filter_by(email=form.email.data).first()
         if user:
-            send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password!','info')
+            try:
+                print(f"Sending email to: {user.email}")
+                send_reset_email(user)
+                print("EMAIL SENT SUCCESSFULLY")
+                flash('An email has been sent with instructions to reset your password!','info')
+            except Exception as e:
+                print("EMAIL ERROR:", repr(e))
+                flash('Unable to send reset mail right now, try again later!','danger')
         return redirect(url_for('users.login'))
     return render_template('reset_request.html',title='Reset Password',form=form, legend="Reset Password")
 
