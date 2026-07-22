@@ -1,4 +1,4 @@
-# Flask Blog Application
+# BlogIt
 
 A production-ready blog web application built using Flask that allows users to create accounts, publish blog posts, manage profiles, and interact with a dynamic blogging platform.
 
